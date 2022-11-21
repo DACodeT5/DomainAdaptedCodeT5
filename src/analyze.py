@@ -37,8 +37,8 @@ def bleu(generated,actual):
     weight = [(1,0,0,0),(0,1,0,0),(0,0,1,0),(0,0,0,1)]
     if type(generated) is not str or type(actual) is not str:
         return  pd.Series([None]*4)
-    g_token = tokenizer.encode(generated)
-    a_token = tokenizer.encode(actual)
+    g_token = tokenizer.encode(generated)[1:-1]
+    a_token = tokenizer.encode(actual)[1:-1]
     bleu_n = []
     for i,w in enumerate(weight):
         if i+1 > len(g_token)  :
@@ -52,9 +52,9 @@ callback_bleu = lambda x: bleu(x["Generated Text"], x["Actual Text"])
 def editing_distance(generated,actual):
     g_token ,a_token = [" "],[" "]
     if type(generated) is str:
-        g_token = tokenizer.encode(generated)
+        g_token = tokenizer.encode(generated)[1:-1]
     if type(actual) is str:
-        a_token = tokenizer.encode(actual)
+        a_token = tokenizer.encode(actual)[1:-1]
     return edit_distance(g_token,a_token)/max(len(g_token),len(a_token))
 
 callback_editing_distance = lambda x: editing_distance(x["Generated Text"], x["Actual Text"])
